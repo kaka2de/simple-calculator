@@ -3,87 +3,225 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple Calculator</title>
+  <title>Scientific Calculator</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
     body {
-      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f4f4f9;
+      min-height: 100vh;
+      background-color: #0f172a;
+      color: #f8fafc;
     }
+
     .calculator {
-      background: #ffffff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      text-align: center;
+      background: #1e293b;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      width: 380px;
     }
+
     #display {
       width: 100%;
-      height: 40px;
-      font-size: 1.2rem;
-      margin-bottom: 10px;
+      height: 60px;
+      background-color: #0f172a;
+      color: #38bdf8;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      font-size: 1.5rem;
       text-align: right;
-      padding-right: 5px;
-      box-sizing: border-box;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      outline: none;
     }
+
     .buttons {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
     }
+
     button {
-      padding: 15px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      height: 48px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
-      background: #e9e9e9;
+      background: #334155;
+      color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all 0.15s ease-in-out;
     }
+
     button:hover {
-      background: #ddd;
+      background: #475569;
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+
+    .btn-danger {
+      background: #7f1d1d;
+      color: #fca5a5;
+    }
+    .btn-danger:hover {
+      background: #991b1b;
+    }
+
+    .btn-op {
+      background: #0f766e;
+      color: #ccfbf1;
+    }
+    .btn-op:hover {
+      background: #115e59;
+    }
+
+    .btn-equals {
+      background: #0284c7;
+      color: #ffffff;
+    }
+    .btn-equals:hover {
+      background: #0369a1;
+    }
+
+    .btn-toggle {
+      background: #1e40af;
+      color: #bfdbfe;
+    }
+    .btn-toggle:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-num {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f8fafc;
+    }
+    .btn-num:hover {
+      background: #334155;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
     }
   </style>
 </head>
 <body>
 
   <div class="calculator">
-    <h2>Simple Calculator</h2>
-    <input type="text" id="display" readonly>
+    <input type="text" id="display" readonly placeholder="0">
     <div class="buttons">
-      <button onclick="clearDisplay()">C</button>
-      <button onclick="deleteLast()">DEL</button>
-      <button onclick="appendValue('/')">/</button>
-      <button onclick="appendValue('*')">*</button>
-      
-      <button onclick="appendValue('7')">7</button>
-      <button onclick="appendValue('8')">8</button>
-      <button onclick="appendValue('9')">9</button>
-      <button onclick="appendValue('-')">-</button>
-      
-      <button onclick="appendValue('4')">4</button>
-      <button onclick="appendValue('5')">5</button>
-      <button onclick="appendValue('6')">6</button>
-      <button onclick="appendValue('+')">+</button>
-      
-      <button onclick="appendValue('1')">1</button>
-      <button onclick="appendValue('2')">2</button>
-      <button onclick="appendValue('3')">3</button>
-      <button onclick="calculate()">=</button>
-      
-      <button onclick="appendValue('0')">0</button>
-      <button onclick="appendValue('.')">.</button>
+      <!-- Clear and Delete with Vector Icons -->
+      <button class="btn-danger" onclick="clearDisplay()" title="Clear All">
+        <svg viewBox="0 0 24 24"><path d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12z"/></svg>
+      </button>
+      <button class="btn-danger" onclick="deleteLast()" title="Backspace">
+        <svg viewBox="0 0 24 24"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+      </button>
+      <button onclick="appendValue('(')">(</button>
+      <button onclick="appendValue(')')">)</button>
+
+      <!-- Angle Mode & Basic Trig -->
+      <button id="angleBtn" class="btn-toggle" onclick="toggleAngleMode()">DEG</button>
+      <button onclick="calculateTrig('sin')">sin</button>
+      <button onclick="calculateTrig('cos')">cos</button>
+      <button onclick="calculateTrig('tan')">tan</button>
+
+      <!-- Inverse Trig & Division -->
+      <button onclick="appendFunction('Math.asin(')">sin⁻¹</button>
+      <button onclick="appendFunction('Math.acos(')">cos⁻¹</button>
+      <button onclick="appendFunction('Math.atan(')">tan⁻¹</button>
+      <button class="btn-op" onclick="appendValue('/')">÷</button>
+
+      <!-- Roots & Powers -->
+      <button onclick="appendFunction('Math.sqrt(')">√x</button>
+      <button onclick="appendFunction('Math.cbrt(')">∛x</button>
+      <button onclick="appendValue('**2')">x²</button>
+      <button onclick="appendValue('**')">xʸ</button>
+
+      <!-- Logarithms & Multiplication -->
+      <button onclick="appendFunction('Math.log10(')">log₁₀</button>
+      <button onclick="appendFunction('Math.log(')">ln</button>
+      <button onclick="calculateFactorial()">n!</button>
+      <button class="btn-op" onclick="appendValue('*')">×</button>
+
+      <!-- Advanced Functions -->
+      <button onclick="appendFunction('Math.exp(')">eˣ</button>
+      <button onclick="appendFunction('Math.abs(')">|x|</button>
+      <button onclick="appendValue('1/')">1/x</button>
+      <button class="btn-op" onclick="appendValue('/100')">%</button>
+
+      <!-- Physics Constants -->
+      <button onclick="appendValue('Math.PI')">π</button>
+      <button onclick="appendValue('Math.E')">e</button>
+      <button onclick="appendValue('299792458')">c</button>
+      <button onclick="appendValue('6.626e-34')">h</button>
+
+      <!-- Numpad & Subtraction -->
+      <button class="btn-num" onclick="appendValue('7')">7</button>
+      <button class="btn-num" onclick="appendValue('8')">8</button>
+      <button class="btn-num" onclick="appendValue('9')">9</button>
+      <button class="btn-op" onclick="appendValue('-')">−</button>
+
+      <!-- Numpad & Addition -->
+      <button class="btn-num" onclick="appendValue('4')">4</button>
+      <button class="btn-num" onclick="appendValue('5')">5</button>
+      <button class="btn-num" onclick="appendValue('6')">6</button>
+      <button class="btn-op" onclick="appendValue('+')">+</button>
+
+      <!-- Numpad & Equals -->
+      <button class="btn-num" onclick="appendValue('1')">1</button>
+      <button class="btn-num" onclick="appendValue('2')">2</button>
+      <button class="btn-num" onclick="appendValue('3')">3</button>
+      <button class="btn-equals" onclick="calculate()">=</button>
+
+      <!-- Zero & Decimal -->
+      <button class="btn-num" onclick="appendValue('0')">0</button>
+      <button class="btn-num" onclick="appendValue('.')">.</button>
     </div>
   </div>
 
   <script>
     const display = document.getElementById('display');
+    let isDegree = true;
+
+    function toggleAngleMode() {
+      isDegree = !isDegree;
+      document.getElementById('angleBtn').innerText = isDegree ? 'DEG' : 'RAD';
+    }
+
+    function calculateTrig(fn) {
+      try {
+        let val = parseFloat(display.value);
+        if (isNaN(val)) return;
+        let rad = isDegree ? (val * Math.PI) / 180 : val;
+        let res = Math[fn](rad);
+        display.value = parseFloat(res.toFixed(10));
+      } catch (e) {
+        display.value = 'Error';
+      }
+    }
 
     function appendValue(value) {
       display.value += value;
+    }
+
+    function appendFunction(fn) {
+      display.value += fn;
     }
 
     function clearDisplay() {
@@ -92,6 +230,23 @@
 
     function deleteLast() {
       display.value = display.value.slice(0, -1);
+    }
+
+    function calculateFactorial() {
+      try {
+        let num = parseInt(display.value);
+        if (isNaN(num) || num < 0) {
+          display.value = 'Error';
+          return;
+        }
+        let result = 1;
+        for (let i = 2; i <= num; i++) {
+          result *= i;
+        }
+        display.value = result;
+      } catch (error) {
+        display.value = 'Error';
+      }
     }
 
     function calculate() {
